@@ -1,9 +1,6 @@
-feat: Re-add missing project files and update to interactive editor
+feat: Implement best version of Markdown editor
 
-This commit re-adds the previously missing core project files, including:
-- viewer.py (Flask application for interactive Markdown editor)
-- README.md (Project documentation)
-- templates/index.html (Web interface for the editor)
-- test.md (Sample Markdown file)
-
-It also ensures that the project is updated to the interactive Markdown editor version with file I/O and enhanced code snippet viewing.
+This commit introduces the "best version" of the Markdown editor, focusing on enhanced usability and polish:
+- Initial file load: Automatically loads README.md on startup.
+- Improved user feedback: Replaced alert dialogs with a dynamic status message area for load/save operations.
+- UI refinements: Applied subtle CSS adjustments for improved aesthetics and user experience.
