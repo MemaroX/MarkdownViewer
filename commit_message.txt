@@ -1,0 +1,8 @@
+feat: Implement interactive Markdown editor with file I/O
+
+This commit introduces a significant upgrade to the MarkdownViewer, transforming it into a web-based interactive editor. Key features include:
+- Integration of Flask for a robust web server.
+- In-browser Markdown editing with real-time HTML preview.
+- File loading and saving capabilities directly from the web interface.
+- Enhanced code snippet viewing with Pygments-compatible syntax highlighting.
+- Refactored project structure with a dedicated 'templates' directory for better organization.
