@@ -13,7 +13,13 @@ def convert_md_to_html(md_content):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    readme_content = ""
+    try:
+        with open('README.md', 'r', encoding='utf-8') as f:
+            readme_content = f.read()
+    except FileNotFoundError:
+        readme_content = "# Welcome to Markdown Editor\n\nStart writing your Markdown here!"
+    return render_template('index.html', initial_content=readme_content)
 
 @app.route('/convert', methods=['POST'])
 def convert():

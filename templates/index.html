@@ -5,14 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markdown Editor</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; }
-        .header { padding: 10px; background-color: #f0f0f0; border-bottom: 1px solid #ccc; display: flex; align-items: center; }
-        .header input[type="text"] { flex-grow: 1; margin-right: 10px; padding: 5px; border: 1px solid #ccc; }
-        .header button { padding: 5px 10px; cursor: pointer; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; overflow: hidden; }
+        .header { padding: 10px; background-color: #f0f0f0; border-bottom: 1px solid #ccc; display: flex; align-items: center; gap: 10px; }
+        .header input[type="text"] { flex-grow: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .header button { padding: 8px 15px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px; }
+        .header button:hover { background-color: #0056b3; }
         .main-content { flex: 1; display: flex; }
         #editor-container { flex: 1; display: flex; flex-direction: column; }
-        #editor { flex: 1; padding: 10px; border: none; resize: none; font-size: 16px; }
-        #preview-container { flex: 1; padding: 10px; border-left: 1px solid #ccc; overflow-y: auto; }
+        #editor { flex: 1; padding: 15px; border: none; resize: none; font-size: 16px; outline: none; }
+        #preview-container { flex: 1; padding: 15px; border-left: 1px solid #eee; overflow-y: auto; background-color: #f9f9f9; }
+        #status-message { margin-left: auto; padding: 5px 10px; border-radius: 4px; font-size: 0.9em; }
+        .status-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
         /* Pygments default style for code highlighting */
         .highlight .hll { background-color: #ffffcc }
@@ -88,10 +92,11 @@
         <input type="text" id="filePath" placeholder="Enter file path (e.g., README.md)">
         <button id="loadBtn">Load</button>
         <button id="saveBtn">Save</button>
+        <div id="status-message"></div>
     </div>
     <div class="main-content">
         <div id="editor-container">
-            <textarea id="editor" placeholder="Write your Markdown here..."></textarea>
+            <textarea id="editor" placeholder="Write your Markdown here...">{{ initial_content | e }}</textarea>
         </div>
         <div id="preview-container">
             <div id="preview"></div>
@@ -104,6 +109,16 @@
         const filePathInput = document.getElementById('filePath');
         const loadBtn = document.getElementById('loadBtn');
         const saveBtn = document.getElementById('saveBtn');
+        const statusMessage = document.getElementById('status-message');
+
+        function showStatus(message, isError = false) {
+            statusMessage.textContent = message;
+            statusMessage.className = isError ? 'status-error' : 'status-success';
+            setTimeout(() => {
+                statusMessage.textContent = '';
+                statusMessage.className = '';
+            }, 3000);
+        }
 
         editor.addEventListener('input', debounce(() => {
             const markdownContent = editor.value;
@@ -136,13 +151,17 @@
                     if (data.content) {
                         editor.value = data.content;
                         editor.dispatchEvent(new Event('input')); // Trigger conversion
+                        showStatus('File loaded successfully!');
                     } else {
-                        alert('Error loading file: ' + data.error);
+                        showStatus('Error loading file: ' + data.error, true);
                     }
                 })
-                .catch(error => console.error('Error loading file:', error));
+                .catch(error => {
+                    console.error('Error loading file:', error);
+                    showStatus('Error loading file.', true);
+                });
             } else {
-                alert('Please enter a file path to load.');
+                showStatus('Please enter a file path to load.', true);
             }
         });
 
@@ -160,14 +179,17 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('File saved successfully!');
+                        showStatus('File saved successfully!');
                     } else {
-                        alert('Error saving file: ' + data.error);
+                        showStatus('Error saving file: ' + data.error, true);
                     }
                 })
-                .catch(error => console.error('Error saving file:', error));
+                .catch(error => {
+                    console.error('Error saving file:', error);
+                    showStatus('Error saving file.', true);
+                });
             } else {
-                alert('Please enter a file path to save.');
+                showStatus('Please enter a file path to save.', true);
             }
         });
 
@@ -180,10 +202,12 @@
             };
         }
 
-        // Initial conversion on load (if editor has content)
-        if (editor.value) {
-            editor.dispatchEvent(new Event('input'));
-        }
+        // Initial setup on load
+        document.addEventListener('DOMContentLoaded', () => {
+            filePathInput.value = 'README.md';
+            editor.value = `{{ initial_content | e }}`;
+            editor.dispatchEvent(new Event('input')); // Trigger initial conversion
+        });
     </script>
 </body>
 </html>

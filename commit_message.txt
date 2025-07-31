@@ -1,8 +1,9 @@
-feat: Initial commit of interactive Markdown editor
+feat: Re-add missing project files and update to interactive editor
 
-This commit introduces the initial version of the interactive Markdown editor. Key features include:
-- Flask-based web server for in-browser editing.
-- Real-time HTML preview of Markdown content.
-- File loading and saving capabilities directly from the web interface.
-- Enhanced code snippet viewing with Pygments-compatible syntax highlighting.
-- Organized project structure with a dedicated 'templates' directory.
+This commit re-adds the previously missing core project files, including:
+- viewer.py (Flask application for interactive Markdown editor)
+- README.md (Project documentation)
+- templates/index.html (Web interface for the editor)
+- test.md (Sample Markdown file)
+
+It also ensures that the project is updated to the interactive Markdown editor version with file I/O and enhanced code snippet viewing.
